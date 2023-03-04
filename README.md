@@ -16,4 +16,5 @@ Se - exposed planform area (wing or tail)
 SWP - leading edge sweep angle,
 TR - taper ratio,
 VOL - volume,
+WH - warhead,
 WT - weight.
