@@ -1,0 +1,153 @@
+RAM_w = 308 [kg]
+BOST_w = 1068 [kg]
+ 
+L_ramj = 3,689 [m]  " data from internal ballistics"
+L_boost = 2,44 [m]
+L_diff = 0,5 [m]}
+ 
+ 
+DIA = DIA_mm*convert(mm , m)
+DIA|bu = DIA*convert (m,ft) 
+RNG = RNG_km*convert (km,nautm)
+ 
+{WT = 48,9*(RNG^0,92)  }"Table 5 - SSM R^2 = 91,4%  "
+VOL = 0.67*RNG^0.97
+WT_si = WT*convert(lbm , kg)
+VOL_si = VOL*convert(ft^3 , m^3)
+DEN = 65.49 [lbm/ft^3] " Table A4-C   average density for SSM" 
+DEN = (WT/VOL)
+DEN|si = DEN*convert(lbm/ft^3 , kg/m^3)
+ 
+LEN = VOL/(0.25*pi#*DIA|bu^2)
+LEN|si = LEN*convert(ft , m)
+ 
+WT_b = WT  " booster weight "
+WT_r = GC_w + WH_w + 0.50*PP_w   "ramjet weight.. 50% propulsion weight"
+WING_b = (5.4 [lbm] - 0.2[lbm/Degree]*SWP_b + 0.005*WT_b + 11.1[lbm]*TR_b)
+ 
+WING_r = (1.3[lbm]*AR_r + 0.1[lbm/Degree]*SWP_r -12.4[lbm]*TR_r + 0.0006*WT_r)
+WING_w = (WING_b + WING_r)/2
+ 
+TR_b = 0.13
+TR_b = C_tb/C_rb
+AR_b = b_eb*b_eb/Seb
+SWP_b = 45 [Degree]
+h_eb = C_rb - C_tb
+ 
+tan(SWP_b) = h_eb/b_eb
+Seb = b_eb*C_tb + (h_eb*b_eb)/2
+Seb_m2 = Seb*convert(mm^2 , m^2)
+n_finb = 2
+fin_tick = 1 [mm]*convert(mm , m)
+rho_fin = density(Stainless_AISI302, T= 30 [C])
+rho_fin = WING_b*convert(lbm , kg)/(Seb_m2*fin_tick)
+S_\finb = Seb_m2/n_finb
+ 
+TR_r = 300/1200
+TR_r = C_tr/C_rr
+AR_r = b_er*b_er/Ser
+SWP_r =20 [Degree]
+h_er = C_rr - C_tr
+tan(SWP_r) = h_er/b_er
+{b_er = 30}
+Ser = b_er*C_tr + (h_er*b_er)/2
+Ser_m2 = Ser*convert(mm^2 , m^2)
+ 
+n_finr = 2
+rho_fin = WING_r*convert(lbm , kg)/(Ser_m2*fin_tick)
+S_\finr = Ser_m2/n_finr
+ 
+PP_w = 632.8 + 14.1*RNG  " Table 14 SSM   R^2 = 99% withou subsonic air-breathing engines"
+ 
+PP_v = 5.9 + 0.18*RNG  " Table 14 SSM   R^2 = 98%   PP_davg = 91,21 [lbm/ft^3]"
+{ 
+PP_davg = 91,21 [lbm/ft^3]*convert(lbm/ft^3 ; kg/m^3)}
+ 
+PP_d = PP_w/PP_v
+ 
+PP_den = PP_d*convert(lbm/ft^3 , kg/m^3)
+PP_wei = PP_w*convert(lbm , kg)
+PP_vol = (0.25*pi#*DIA_pp^2)*L_PP
+PP_vol = PP_v*convert(ft^3, m^3)
+DIA_PP = 0.90*DIA
+ 
+{GC_w = 274 [lbm]  "average for SSM"}
+{GC_w = 176,7*DIA|bu - 6,9*VOL + 0,2*WT - 7,9*LEN   "TAble 26 overall R^2 = 90,0%" }
+ 
+GC_w = (176.7*DIA|bu - 6.9*(WH_v + GC_v + PP_v) + 0.2*(WH_w + GC_w + PP_w) - 7.9*(LEN_sum*convert(m ,ft)))   "TAble 26 overall R^2 = 90,0%" 
+ 
+ 
+{GC_wref = 176,7*DIA|bu - 6,9*(1,726[m^3]*convert(m^3 ; ft^3)) + 0,2*(1,8 [ton]*convert(ton ; lbm))- 7,9*(6,1 [m]*convert (m ; ft))}
+GC_d =GC_w /GC_v
+GC_d = 51.09 [lbm/ft^3]  "Table A-19 average for all categories"
+GC_den = GC_d*convert(lbm/ft^3 , kg/m^3)
+GC_wei = GC_w*convert(lbm , kg)
+GC_vol = GC_v*convert(ft^3 , m^3)
+GC_vol = (0.25*pi#*DIA_GC^2)*L_GC
+DIA_GC = 0.90*DIA
+ 
+ 
+WH_w = 119.3*(WH_v^0.93)   "Table 21 - overall all categories R^2 = 93,95  "
+WH_w = WH_wei*convert(kg , lbm)
+WH_den = (WH_w/WH_v)*convert(lbm/ft^3 , kg/m^3)
+WH_vol = WH_v*convert(ft^3 , m^3)
+WH_vol = (0.25*pi#*DIA_wh^2)*L_WH
+DIA_wh = 0.90*DIA
+ 
+WT_sum = 1.22*(PP_w + GC_w + WH_w)*convert(lbm , kg)
+LEN_sum = (L_PP + L_GC + L_WH) + L_int
+L_int = 0.5 [m]
+DEN_sum = WT_sum/( (0.25*pi#*DIA^2)*LEN_sum)
+ 
+PP|code_w = RAM_w + BOST_w
+ 
+PP|code_dens = PP|code_w/PP|code_vol
+PP|code_vol = (pi#*DIA^2)/4*(L_ramj + L_boost) 
+ 
+WT_code = GC_wei + WH_wei + PP|code_w + BS_w
+BS_w = 0.15*WT_code
+ 
+ 
+V_tot = GC_vol + PP_vol + WH_vol
+ 
+L_tot = L_gc + L_wh + L_pp
+ 
+GC% = 100[%]*GC_vol/V_tot
+PP% = 100[%]*PP_vol/V_tot
+WH% = 100[%]*WH_vol/V_tot
+ 
+LEN_code = L_ramj + L_boost + L_diff
+L_ave = (L_tot + LEN|si)/2
+VOL_code = 0.25*pi#*DIA^2*LEN_code
+DEN_code = WT_code/VOL_code
+DEN_ave = 97 [lbm/ft^3]*convert(lbm/ft^3 , kg/m^3)
+ 
+ 
+"..................................................."
+ 
+{TR_b = 0.13
+TR_b = C_tb/C_rb
+AR_b = b_eb*b_eb/Seb
+SWP_b = 40 [Degree]
+tan(SWP_b) = C_rb/(b_eb + DIA_mm/2)
+tan(SWP_b) = h_eb/b_eb
+Seb = b_eb*C_tb + (h_eb*b_eb)/2
+Seb_m2 = Seb*convert(mm^2;m^2)
+n_finb = 4
+fin_tick = 1 [mm]*convert(mm ; m)
+rho_fin = density(Stainless_AISI302; T= 30 [C])
+rho_fin = WING_b*convert(lbm ; kg)/(Seb_m2*fin_tick)
+S_\finb = Seb_m2/n_finb
+ 
+TR_r = 0.7
+TR_r = C_tr/C_rr
+AR_r = b_er*b_er/Ser
+SWP_r = 37 [Degree]
+tan(SWP_r) = C_rr/(b_er + DIA_mm/2)
+tan(SWP_b) = h_er/b_er
+ 
+Ser = b_er*C_tr + (h_er*b_er)/2
+Ser_m2 = Ser*convert(mm^2 ; m^2)
+n_finr = 4
+rho_fin = WING_r*convert(lbm ; kg)/(Ser_m2*fin_tick)
+S_\finr = Ser_m2/n_finr}
